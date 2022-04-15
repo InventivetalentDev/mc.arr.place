@@ -19,10 +19,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Level;
 
 public class CanvasPlugin extends JavaPlugin implements Listener {
@@ -36,6 +33,22 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(new File(getDataFolder(), "auth.txt")))) {
             CanvasClient.accessToken = reader.readLine();
+        } catch (IOException e) {
+            getLogger().log(Level.SEVERE, "", e);
+        }
+
+        Bukkit.getScheduler().runTaskTimer(this, this::saveAuth, 60, 20 * 60 * 60);
+    }
+
+    @Override
+    public void onDisable() {
+        saveAuth();
+    }
+
+    void saveAuth() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(getDataFolder(), "auth.txt")))) {
+            writer.write(CanvasClient.accessToken);
+            writer.flush();
         } catch (IOException e) {
             getLogger().log(Level.SEVERE, "", e);
         }
