@@ -20,6 +20,8 @@ import java.util.stream.StreamSupport;
 public class CanvasUpdater {
 
     private final CanvasPlugin plugin;
+    private final int min;
+    private final int max;
     private final Function<Vector, Material> blockChecker;
     private final BiConsumer<Vector, Material> blockPlacer;
 
@@ -31,8 +33,10 @@ public class CanvasUpdater {
 
     Map<Vector, Material> blockQueue = new HashMap<>();
 
-    public CanvasUpdater(CanvasPlugin plugin, Function<Vector, Material> blockChecker, BiConsumer<Vector, Material> blockPlacer) {
+    public CanvasUpdater(CanvasPlugin plugin, int min, int max, Function<Vector, Material> blockChecker, BiConsumer<Vector, Material> blockPlacer) {
         this.plugin = plugin;
+        this.min = min;
+        this.max = max;
         this.blockChecker = blockChecker;
         this.blockPlacer = blockPlacer;
     }
@@ -73,8 +77,18 @@ public class CanvasUpdater {
     public void placeBase() {
         for (int x = 0; x < canvasState.w; x++) {
             for (int y = 0; y < canvasState.h; y++) {
-                queueBlock(new Vector(x, 1, y), Material.STONE);
-                queueBlock(new Vector(x, 2, y), Material.WHITE_CONCRETE);
+                queueBlock(new Vector(x, min + 1, y), Material.STONE);
+                queueBlock(new Vector(x, min + 2, y), Material.WHITE_CONCRETE);
+            }
+        }
+    }
+
+    public void clear() {
+        for (int x = 0; x < canvasState.w; x++) {
+            for (int y = 0; y < canvasState.h; y++) {
+                for (int i = min + 3; i < max; i++) {
+                    queueBlock(new Vector(x, i, y), Material.AIR);
+                }
             }
         }
     }

@@ -30,7 +30,7 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
     public void on(WorldLoadEvent event) {
         world = Bukkit.getWorlds().get(0);
         world.setTime(2400);
-        world.setSpawnLocation(128, 32, 128);
+        world.setSpawnLocation(128, world.getMinHeight() + 32, 128);
         world.setPVP(false);
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
@@ -41,7 +41,7 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
         border.setCenter(128, 128);
         border.setSize(512, 512);
 
-        updater = new CanvasUpdater(this,
+        updater = new CanvasUpdater(this, world.getMinHeight(), world.getMaxHeight(),
                 vector -> {
                     int y = vector.getBlockY();
                     if (y == -1) {
@@ -125,6 +125,10 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
         }
         if (args[0].equalsIgnoreCase("loadcurrent")) {
             updater.loadCurrent();
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("clear")) {
+            updater.clear();
             return true;
         }
         if (args[0].equalsIgnoreCase("pause")) {

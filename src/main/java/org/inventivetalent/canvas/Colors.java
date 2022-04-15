@@ -35,7 +35,7 @@ public class Colors {
         r("#00756f", Material.WARPED_WART_BLOCK);
         r("#7eed56", Material.SLIME_BLOCK);
         r("#00cc78", Material.EMERALD_BLOCK);
-        r("#00a368", Material.BLUE_GLAZED_TERRACOTTA);
+        r("#00a368", Material.CYAN_CONCRETE);
         r("#fff8b8", Material.YELLOW_WOOL);
         r("#ffd635", Material.YELLOW_CONCRETE);
         r("#ffa800", Material.GOLD_BLOCK);
