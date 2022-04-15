@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
 import java.util.stream.StreamSupport;
 
 public class CanvasUpdater {
@@ -72,11 +73,14 @@ public class CanvasUpdater {
     }
 
     public void loadCurrent() {
+        lastState = new JsonArray();
         lastChunks = new BufferedImage[canvasState.w][canvasState.h];
-        for (int x = 0; x < canvasState.w; x++) {
-            for (int y = 0; y < canvasState.h; y++) {
-                lastChunks[x][y] = new BufferedImage(canvasState.s, canvasState.s, BufferedImage.TYPE_INT_RGB);
-                var g = lastChunks[x][y].createGraphics();
+        for (int x = 0; x < canvasState.w / canvasState.s; x++) {
+            for (int y = 0; y < canvasState.h / canvasState.s; y++) {
+                int finalX = x;
+                int finalY = y;
+                lastChunks[finalX][finalY] = new BufferedImage(canvasState.s, canvasState.s, BufferedImage.TYPE_INT_RGB);
+                var g = lastChunks[finalX][finalY].createGraphics();
                 g.setPaint(Color.WHITE);
                 g.fillRect(0, 0, canvasState.s, canvasState.s);
             }
@@ -87,18 +91,28 @@ public class CanvasUpdater {
     public CompletableFuture<Void> updateCanvasInfo() {
         return CanvasClient.getHello().thenAccept(state -> {
             canvasState = state;
+            if (lastState == null) {
+                lastState = new JsonArray();
+            }
+            if (lastChunks == null) {
+                lastChunks = new BufferedImage[canvasState.w][canvasState.h];
+            }
+        }).exceptionally(e -> {
+            plugin.getLogger().log(Level.SEVERE, "", e);
+            return null;
         });
     }
 
     public CompletableFuture<Void> update() {
         return CanvasClient.getState().thenAccept(state -> {
             if (lastState != null && lastState.equals(state)) return; // nothing changed
-            lastState = state;
+            System.out.println("new state!");
 
             StreamSupport.stream(state.spliterator(), true)
                     .map(JsonElement::getAsString)
                     .forEach(str -> {
-                        String[] split0 = str.split("_");
+                        String str1 = str.replace(".png", "");
+                        String[] split0 = str1.split("_");
                         String[] split1 = split0[2].split("-");
                         int x = Integer.parseInt(split1[0]);
                         int y = Integer.parseInt(split1[1]);
@@ -107,17 +121,29 @@ public class CanvasUpdater {
                                 .thenAccept(image -> {
                                     processChanges(x, y, image);
                                     lastChunks[x][y] = image;
+                                })
+                                .exceptionally(e -> {
+                                    plugin.getLogger().log(Level.SEVERE, "", e);
+                                    return null;
                                 });
                     });
+
+            lastState = state;
+        }).exceptionally(e -> {
+            plugin.getLogger().log(Level.SEVERE, "", e);
+            return null;
         });
     }
 
     int[][] collectChanges(int x, int y, BufferedImage newImage) {
-        int[][] changedColors = new int[newImage.getWidth()][newImage.getHeight()];
-        for (int i = 0; i < newImage.getWidth(); i++) {
-            for (int j = 0; j < newImage.getHeight(); j++) {
+        int[][] changedColors = new int[canvasState.s][canvasState.s];
+        for (int i = 0; i < canvasState.s; i++) {
+            for (int j = 0; j < canvasState.s; j++) {
                 changedColors[i][j] = -1;
             }
+        }
+        if (newImage == null) {
+            return changedColors;
         }
         for (int i = 0; i < newImage.getWidth(); i++) {
             for (int j = 0; j < newImage.getHeight(); j++) {

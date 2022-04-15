@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -63,9 +64,9 @@ public class CanvasClient {
     public static CompletableFuture<BufferedImage> getChunkImage(String id) {
         return get("/pngs/" + id)
                 .thenApply(Response::body)
-                .thenApply(ResponseBody::byteStream)
-                .thenApply(stream -> {
-                    try {
+                .thenApply(body -> {
+                    try (InputStream stream = body.byteStream()) {
+                        System.out.println(stream.available());
                         return ImageIO.read(stream);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -118,6 +119,7 @@ public class CanvasClient {
         var builder = new Request.Builder()
                 .get()
                 .url(ENDPOINT + path);
+        System.out.println("GET " + ENDPOINT + path);
         addCommon(builder);
         return CompletableFuture.supplyAsync(() -> {
             try {
