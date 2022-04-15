@@ -97,7 +97,21 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
         event.getPlayer().setFlySpeed(1);
         event.getPlayer().setWalkSpeed(1);
 
-        event.getPlayer().teleport(world.getSpawnLocation());
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            event.getPlayer().teleport(world.getSpawnLocation());
+        }, 10);
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            event.getPlayer().sendMessage(" ");
+            event.getPlayer().sendMessage(ChatColor.YELLOW + "==============================");
+
+            event.getPlayer().sendMessage(ChatColor.AQUA + "Hi there!");
+            event.getPlayer().sendMessage(ChatColor.AQUA + "Welcome to the change history of " + ChatColor.DARK_AQUA + "arr.place" + ChatColor.AQUA + "!");
+            event.getPlayer().sendMessage(ChatColor.AQUA + "Go to the " + ChatColor.DARK_AQUA + "https://arr.place" + ChatColor.AQUA + " website to contribute");
+
+            event.getPlayer().sendMessage(ChatColor.YELLOW + "==============================");
+            event.getPlayer().sendMessage(" ");
+        }, 50);
     }
 
     @EventHandler
