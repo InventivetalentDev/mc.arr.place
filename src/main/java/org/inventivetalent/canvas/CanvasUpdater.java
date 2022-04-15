@@ -37,7 +37,7 @@ public class CanvasUpdater {
     public void schedule() {
         updateCanvasInfo().thenAccept(v -> {
             Bukkit.getScheduler().runTaskTimer(plugin, this::update, 50, 50);
-            Bukkit.getScheduler().runTaskTimer(plugin, this::updateCanvasInfo, 20 * 60 * 2, 20 * 60 * 2);
+            Bukkit.getScheduler().runTaskTimer(plugin, this::updateCanvasInfo, 20 * 60 * 15, 20 * 60 * 15);
         });
 
         Bukkit.getScheduler().runTaskTimer(plugin, this::placeBlocks, 1, 1);
