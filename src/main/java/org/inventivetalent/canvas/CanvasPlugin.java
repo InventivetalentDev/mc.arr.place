@@ -37,15 +37,10 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
             getLogger().log(Level.SEVERE, "", e);
         }
 
-        Bukkit.getScheduler().runTaskTimer(this, this::saveAuth, 60, 20 * 60 * 60);
     }
 
     @Override
     public void onDisable() {
-        saveAuth();
-    }
-
-    void saveAuth() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(getDataFolder(), "auth.txt")))) {
             writer.write(CanvasClient.accessToken);
             writer.flush();
