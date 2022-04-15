@@ -39,7 +39,7 @@ public class CanvasClient {
     static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     static final Gson GSON = new GsonBuilder().create();
 
-    static String accessToken = ""
+    static String accessToken = "";
 
     public static CompletableFuture<CanvasState> getHello() {
         return get("/hello")

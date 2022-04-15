@@ -16,6 +16,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+
 public class CanvasPlugin extends JavaPlugin implements Listener {
 
     private World world;
@@ -24,6 +30,12 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File(getDataFolder(), "auth.txt")))) {
+            CanvasClient.accessToken = reader.readLine();
+        } catch (IOException e) {
+            getLogger().log(Level.SEVERE, "", e);
+        }
     }
 
     @EventHandler
