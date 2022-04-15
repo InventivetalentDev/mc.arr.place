@@ -1,7 +1,6 @@
 package org.inventivetalent.canvas;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -26,6 +25,18 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void on(WorldLoadEvent event) {
         world = Bukkit.getWorlds().get(0);
+        world.setTime(2400);
+        world.setSpawnLocation(128, 32, 128);
+        world.setPVP(false);
+        world.setDifficulty(Difficulty.PEACEFUL);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+
+        WorldBorder border = world.getWorldBorder();
+        border.setCenter(0, 0);
+        border.setSize(512, 512);
+
         updater = new CanvasUpdater(this, (vector, material) -> Bukkit.getScheduler()
                 .runTask(CanvasPlugin.this, () -> {
                     int y = vector.getBlockY();

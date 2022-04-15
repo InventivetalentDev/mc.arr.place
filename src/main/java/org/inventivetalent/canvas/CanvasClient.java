@@ -66,7 +66,6 @@ public class CanvasClient {
                 .thenApply(Response::body)
                 .thenApply(body -> {
                     try (InputStream stream = body.byteStream()) {
-                        System.out.println(stream.available());
                         return ImageIO.read(stream);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -119,7 +118,6 @@ public class CanvasClient {
         var builder = new Request.Builder()
                 .get()
                 .url(ENDPOINT + path);
-        System.out.println("GET " + ENDPOINT + path);
         addCommon(builder);
         return CompletableFuture.supplyAsync(() -> {
             try {
