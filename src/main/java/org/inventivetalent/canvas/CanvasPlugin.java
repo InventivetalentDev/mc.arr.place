@@ -5,6 +5,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
@@ -34,18 +39,59 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
         world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
 
         WorldBorder border = world.getWorldBorder();
-        border.setCenter(0, 0);
+        border.setCenter(128, 128);
         border.setSize(512, 512);
 
-        updater = new CanvasUpdater(this, (vector, material) -> Bukkit.getScheduler()
-                .runTask(CanvasPlugin.this, () -> {
+        updater = new CanvasUpdater(this,
+                vector -> {
                     int y = vector.getBlockY();
                     if (y == -1) {
-                        y = world.getHighestBlockAt(vector.getBlockX(), vector.getBlockZ()).getY() + 1;
+                        y = world.getHighestBlockAt(vector.getBlockX(), vector.getBlockZ()).getY();
                     }
-                    world.getBlockAt(vector.getBlockX(), y, vector.getBlockZ()).setType(material);
-                }));
+                    return world.getBlockAt(vector.getBlockX(), y, vector.getBlockZ()).getType();
+                },
+                (vector, material) -> Bukkit.getScheduler()
+                        .runTask(CanvasPlugin.this, () -> {
+                            int y = vector.getBlockY();
+                            if (y == -1) {
+                                y = world.getHighestBlockAt(vector.getBlockX(), vector.getBlockZ()).getY() + 1;
+                            }
+                            world.getBlockAt(vector.getBlockX(), y, vector.getBlockZ()).setType(material);
+                        }));
         updater.schedule();
+    }
+
+    @EventHandler
+    public void on(PlayerJoinEvent event) {
+        event.getPlayer().setGameMode(GameMode.ADVENTURE);
+        event.getPlayer().setAllowFlight(true);
+        event.getPlayer().setFlying(true);
+    }
+
+    @EventHandler
+    public void on(EntityDamageEvent event) {
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void on(PlayerInteractEvent event) {
+        if (!event.getPlayer().isOp()) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void on(BlockPlaceEvent event) {
+        if (!event.getPlayer().isOp()) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void on(BlockBreakEvent event) {
+        if (!event.getPlayer().isOp()) {
+            event.setCancelled(true);
+        }
     }
 
     @Override

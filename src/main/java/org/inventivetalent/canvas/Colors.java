@@ -28,14 +28,14 @@ public class Colors {
         r("#6a5cff", Material.LIGHT_BLUE_CONCRETE);
         r("#493ac1", Material.LIGHT_BLUE_CONCRETE_POWDER);
         r("#51e9f4", Material.CYAN_WOOL);
-        r("#3690ea", Material.CYAN_CONCRETE);
-        r("#2450a4", Material.CYAN_CONCRETE_POWDER);
-        r("#00ccc0", Material.LIME_WOOL);
-        r("#009eaa", Material.LIME_CONCRETE);
-        r("#00756f", Material.LIME_CONCRETE_POWDER);
-        r("#7eed56", Material.LIME_WOOL); //TODO
-        r("#00cc78", Material.LIME_CONCRETE_POWDER);
-        r("#00a368", Material.CYAN_WOOL); //TODO
+        r("#3690ea", Material.BLUE_WOOL);
+        r("#2450a4", Material.BLUE_CONCRETE);
+        r("#00ccc0", Material.DIAMOND_BLOCK);
+        r("#009eaa", Material.STRIPPED_WARPED_HYPHAE);
+        r("#00756f", Material.WAXED_OXIDIZED_COPPER);
+        r("#7eed56", Material.LIME_WOOL);
+        r("#00cc78", Material.LIME_CONCRETE);
+        r("#00a368", Material.LIME_CONCRETE_POWDER);
         r("#fff8b8", Material.YELLOW_WOOL);
         r("#ffd635", Material.YELLOW_CONCRETE);
         r("#ffa800", Material.YELLOW_CONCRETE_POWDER);

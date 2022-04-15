@@ -13,12 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.StreamSupport;
 
 public class CanvasUpdater {
 
     private final CanvasPlugin plugin;
+    private final Function<Vector, Material> blockChecker;
     private final BiConsumer<Vector, Material> blockPlacer;
 
     public boolean paused = false;
@@ -29,8 +31,9 @@ public class CanvasUpdater {
 
     Map<Vector, Material> blockQueue = new HashMap<>();
 
-    public CanvasUpdater(CanvasPlugin plugin, BiConsumer<Vector, Material> blockPlacer) {
+    public CanvasUpdater(CanvasPlugin plugin, Function<Vector, Material> blockChecker, BiConsumer<Vector, Material> blockPlacer) {
         this.plugin = plugin;
+        this.blockChecker = blockChecker;
         this.blockPlacer = blockPlacer;
     }
 
@@ -56,11 +59,15 @@ public class CanvasUpdater {
     }
 
     void queueBlock(int x, int y, int z, Material material) {
-        Bukkit.getScheduler().runTask(plugin, () -> blockQueue.put(new Vector(x, y, z), material));
+        queueBlock(new Vector(x, y, z), material);
     }
 
     void queueBlock(Vector vector, Material material) {
-        Bukkit.getScheduler().runTask(plugin, () -> blockQueue.put(vector, material));
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if (blockChecker.apply(vector) != material) {
+                blockQueue.put(vector, material);
+            }
+        });
     }
 
     public void placeBase() {
@@ -94,9 +101,6 @@ public class CanvasUpdater {
             if (lastState == null) {
                 lastState = new JsonArray();
             }
-            if (lastChunks == null) {
-                lastChunks = new BufferedImage[canvasState.w][canvasState.h];
-            }
         }).exceptionally(e -> {
             plugin.getLogger().log(Level.SEVERE, "", e);
             return null;
@@ -107,6 +111,10 @@ public class CanvasUpdater {
         return CanvasClient.getState().thenAccept(state -> {
             if (lastState != null && lastState.equals(state)) return; // nothing changed
             System.out.println("new state!");
+
+            if (lastChunks == null) {
+                lastChunks = new BufferedImage[canvasState.w][canvasState.h];
+            }
 
             StreamSupport.stream(state.spliterator(), true)
                     .map(JsonElement::getAsString)
