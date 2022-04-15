@@ -1,0 +1,10 @@
+name: Canvas
+main: org.inventivetalent.canvas.CanvasPlugin
+author: inventivetalent
+version: ${project.version}
+load: startup
+api-version: 1.17
+commands:
+  canvas:
+    description: hi
+
