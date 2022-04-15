@@ -14,6 +14,7 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,6 +89,7 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
 
         if (event.getEntity() instanceof Player player) {
             if (event.getEntity().getLocation().getY() < world.getMinHeight()) {
+                player.setVelocity(new Vector(0, 1, 0));
                 player.teleport(world.getSpawnLocation());
             }
         }
