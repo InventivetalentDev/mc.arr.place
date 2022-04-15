@@ -128,7 +128,7 @@ public class CanvasUpdater {
     public CompletableFuture<Void> update() {
         return CanvasClient.getState().thenAccept(state -> {
             if (lastState != null && lastState.equals(state)) return; // nothing changed
-            System.out.println("new state!");
+            plugin.getLogger().info("new state!");
 
             if (lastChunks == null) {
                 lastChunks = new BufferedImage[canvasState.w][canvasState.h];
@@ -178,7 +178,7 @@ public class CanvasUpdater {
                 int oldColor = lastChunks[x][y].getRGB(i, j);
                 if (newColor != oldColor) {
                     changedColors[i][j] = newColor;
-                    System.out.println("got change in chunk " + x + "," + y + " at " + i + "," + j + " from " + oldColor + " to " + newColor);
+                    plugin.getLogger().fine("got change in chunk " + x + "," + y + " at " + i + "," + j + " from " + oldColor + " to " + newColor);
                 }
             }
         }
