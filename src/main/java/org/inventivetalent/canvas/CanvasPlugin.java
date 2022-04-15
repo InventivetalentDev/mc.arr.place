@@ -3,6 +3,7 @@ package org.inventivetalent.canvas;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
@@ -77,11 +78,19 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
         event.getPlayer().setGameMode(GameMode.ADVENTURE);
         event.getPlayer().setAllowFlight(true);
         event.getPlayer().setFlying(true);
+
+        event.getPlayer().teleport(world.getSpawnLocation());
     }
 
     @EventHandler
     public void on(EntityDamageEvent event) {
         event.setCancelled(true);
+
+        if (event.getEntity() instanceof Player player) {
+            if (event.getEntity().getLocation().getY() < world.getMinHeight()) {
+                player.teleport(world.getSpawnLocation());
+            }
+        }
     }
 
     @EventHandler
