@@ -5,8 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -93,6 +92,28 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
             event.setCancelled(true);
         }
     }
+
+    @EventHandler
+    public void on(BlockPhysicsEvent event) {
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void on(BlockFormEvent event) {
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void on(BlockIgniteEvent event) {
+        event.setCancelled(true);
+    }
+
+
+    @EventHandler
+    public void on(BlockDamageEvent event) {
+        event.setCancelled(true);
+    }
+
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
