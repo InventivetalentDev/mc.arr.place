@@ -72,6 +72,12 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
                             world.getBlockAt(vector.getBlockX(), y, vector.getBlockZ()).setType(material);
                         }));
         updater.schedule();
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            world.setSpawnLocation(updater.canvasState.w / 2, world.getMinHeight() + 32, updater.canvasState.h / 2);
+            world.getWorldBorder().setCenter(updater.canvasState.w / 2, updater.canvasState.h / 2);
+            world.getWorldBorder().setSize(Math.max(updater.canvasState.w, updater.canvasState.h) * 2);
+        }, 30);
     }
 
     @EventHandler
@@ -79,6 +85,8 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
         event.getPlayer().setGameMode(GameMode.ADVENTURE);
         event.getPlayer().setAllowFlight(true);
         event.getPlayer().setFlying(true);
+        event.getPlayer().setFlySpeed(1);
+        event.getPlayer().setWalkSpeed(1);
 
         event.getPlayer().teleport(world.getSpawnLocation());
     }
