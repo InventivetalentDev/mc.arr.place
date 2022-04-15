@@ -1,5 +1,6 @@
 package org.inventivetalent.canvas;
 
+import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -145,6 +146,10 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
         event.setCancelled(true);
     }
 
+    @EventHandler
+    public void on(PlayerAdvancementCriterionGrantEvent event) {
+        event.setCancelled(true);
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
