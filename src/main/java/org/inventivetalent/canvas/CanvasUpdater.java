@@ -128,7 +128,7 @@ public class CanvasUpdater {
     public CompletableFuture<Void> update() {
         return CanvasClient.getState().thenAccept(state -> {
             if (lastState != null && lastState.equals(state)) return; // nothing changed
-            plugin.getLogger().info("new state!");
+            plugin.getLogger().fine("new state!");
 
             if (lastChunks == null) {
                 lastChunks = new BufferedImage[canvasState.w][canvasState.h];
