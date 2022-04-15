@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +35,8 @@ public class CanvasUpdater {
 
     public void schedule() {
         updateCanvasInfo().thenAccept(v -> {
-            Bukkit.getScheduler().runTaskTimer(plugin, this::update, 40, 40);
-            Bukkit.getScheduler().runTaskTimer(plugin, this::updateCanvasInfo, 20 * 60, 20 * 60);
+            Bukkit.getScheduler().runTaskTimer(plugin, this::update, 50, 50);
+            Bukkit.getScheduler().runTaskTimer(plugin, this::updateCanvasInfo, 20 * 60 * 2, 20 * 60 * 2);
         });
 
         Bukkit.getScheduler().runTaskTimer(plugin, this::placeBlocks, 1, 1);
@@ -70,6 +71,19 @@ public class CanvasUpdater {
         }
     }
 
+    public void loadCurrent() {
+        lastChunks = new BufferedImage[canvasState.w][canvasState.h];
+        for (int x = 0; x < canvasState.w; x++) {
+            for (int y = 0; y < canvasState.h; y++) {
+                lastChunks[x][y] = new BufferedImage(canvasState.s, canvasState.s, BufferedImage.TYPE_INT_RGB);
+                var g = lastChunks[x][y].createGraphics();
+                g.setPaint(Color.WHITE);
+                g.fillRect(0, 0, canvasState.s, canvasState.s);
+            }
+        }
+        update();
+    }
+
     public CompletableFuture<Void> updateCanvasInfo() {
         return CanvasClient.getHello().thenAccept(state -> {
             canvasState = state;
@@ -92,6 +106,7 @@ public class CanvasUpdater {
                         CanvasClient.getChunkImage(str)
                                 .thenAccept(image -> {
                                     processChanges(x, y, image);
+                                    lastChunks[x][y] = image;
                                 });
                     });
         });
@@ -111,6 +126,7 @@ public class CanvasUpdater {
                 int oldColor = lastChunks[x][y].getRGB(i, j);
                 if (newColor != oldColor) {
                     changedColors[i][j] = newColor;
+                    System.out.println("got change in chunk " + x + "," + y + " at " + i + "," + j + " from " + oldColor + " to " + newColor);
                 }
             }
         }

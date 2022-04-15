@@ -45,6 +45,10 @@ public class CanvasPlugin extends JavaPlugin implements Listener {
             updater.placeBase();
             return true;
         }
+        if (args[0].equalsIgnoreCase("loadcurrent")) {
+            updater.loadCurrent();
+            return true;
+        }
         if (args[0].equalsIgnoreCase("pause")) {
             updater.paused = true;
             return true;

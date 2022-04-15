@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -47,7 +46,6 @@ public class CanvasClient {
                 .thenApply(CanvasClient::bodyToString)
                 .thenApply(str -> GSON.fromJson(str, CanvasState.class))
                 .thenApply(body -> {
-                    System.out.println(body);
                     return body;
                 });
     }
@@ -58,7 +56,6 @@ public class CanvasClient {
                 .thenApply(CanvasClient::bodyToString)
                 .thenApply(str -> GSON.fromJson(str, JsonArray.class))
                 .thenApply(body -> {
-                    System.out.println(body);
                     return body;
                 });
     }
@@ -100,11 +97,9 @@ public class CanvasClient {
 
     static Response extractAccessToken(Response response) {
         String cookieHeader = response.header("Set-Cookie");
-        System.out.println(response.headers());
         if (cookieHeader != null) {
             String[] split0 = cookieHeader.split(";");
             String[] split1 = split0[0].split("=");
-            System.out.println(Arrays.toString(split0));
             if (split1[0].equals("access_token")) {
                 accessToken = split1[1];
             }
