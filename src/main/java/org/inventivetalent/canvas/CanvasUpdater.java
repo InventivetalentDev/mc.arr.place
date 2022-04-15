@@ -86,9 +86,13 @@ public class CanvasUpdater {
     public void clear() {
         for (int x = 0; x < canvasState.w; x++) {
             for (int y = 0; y < canvasState.h; y++) {
-                for (int i = min + 3; i < max; i++) {
-                    queueBlock(new Vector(x, i, y), Material.AIR);
-                }
+                int finalX = x;
+                int finalY = y;
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    for (int i = min + 3; i < max; i++) {
+                        queueBlock(new Vector(finalX, i, finalY), Material.AIR);
+                    }
+                }, x);
             }
         }
     }
